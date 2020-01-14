@@ -1,0 +1,75 @@
+--Sezim,Karina,Erkinbek,Azamat
+
+create table restaurant(
+id serial primary key,
+name varchar(50) not null
+);
+
+create table orders(
+id serial primary key,
+created_day varchar(30) not null,
+deleviry_price int not null,
+restaurant_id int references restaurant(id)
+);
+
+create table order_items(
+id serial primary key,
+order_id int references orders(id),
+dishes_id int references dishes(id)
+);
+
+
+create table dishes(
+id serial primary key,
+name varchar(50) not null,
+price int not null,
+restaurant_id int references restaurant(id)
+);
+
+
+
+insert into restaurant(name)
+values('Arzu'),
+values('ABC'),
+values('MacDonalds');
+
+insert into dishes(name,price,restaurant_id)
+values('Pizza',350,1),
+values('Burger',160),('Shaurma,160',2),
+values('Manty',350,3);
+values ('Crepes',50,1),('Socynsky',30,2);
+
+insert into orders(created_day,delivery_price,restaurant_id)
+values('05.01.2020',200,1),
+values('10.01.2020',300,2);
+
+insert into order_items(order_id.dishes_id)
+values(1,2),(2,1);
+
+select*from restaurant;
+select*from dishes;
+select*from order_items;
+
+select r.name as restaurant_name, d.name, oi.order_id,  from orders o
+ join order_items oi on oi.order_id = o.id
+ join restaurant r on o.restaurant_id = r.id
+ join dishes d on oi.dishes_id = d.id
+where o.restaurant_id = 2;
+select d.name, count(oi.dishes_id)
+from orders o
+join order_items oi on o.id = oi.order_id
+join dishes d on oi.dishes_id=d.id
+group by d.name
+order by count desc;
+select o.delivery_price + d.price as total_price, d.name, o.id
+from orders o
+join order_items oi on oi.order_id = o.id
+join dishes d on oi.dishes_id = d.id
+order by total_price desc;
+select d.name, count(oi.dishes_id) as counter
+from order_items oi
+right join dishes d on d.id = oi.dishes_id
+group by d.name
+order by counter asc
+;
+
